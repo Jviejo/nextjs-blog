@@ -1,129 +1,101 @@
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 
-export default function Home() {
+export default function Formulario() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const [submitResult, setSubmitResult] = useState('');
+
+  const onSubmit = (data) => {
+    console.log(data);
+    setSubmitResult('Formulario enviado con éxito!');
+  };
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing sesion de trabaj<code>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+    <div className="container">
+      <h1>Formulario de Registro</h1>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <label htmlFor="dni">DNI:</label>
+          <input
+            id="dni"
+            {...register('dni', { 
+              required: 'El DNI es obligatorio',
+              pattern: {
+                value: /^[0-9]{8}[A-Z]$/,
+                message: 'El DNI debe tener 8 números seguidos de una letra mayúscula'
+              }
+            })}
+          />
+          {errors.dni && <span className="error">{errors.dni.message}</span>}
         </div>
-      </main>
 
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel" className={styles.logo} />
-        </a>
-      </footer>
+        <div>
+          <label htmlFor="nombre">Nombre:</label>
+          <input
+            id="nombre"
+            {...register('nombre', { 
+              required: 'El nombre es obligatorio',
+              minLength: { value: 2, message: 'El nombre debe tener al menos 2 caracteres' }
+            })}
+          />
+          {errors.nombre && <span className="error">{errors.nombre.message}</span>}
+        </div>
+
+        <div>
+          <label htmlFor="apellidos">Apellidos:</label>
+          <input
+            id="apellidos"
+            {...register('apellidos', { 
+              required: 'Los apellidos son obligatorios',
+              minLength: { value: 2, message: 'Los apellidos deben tener al menos 2 caracteres' }
+            })}
+          />
+          {errors.apellidos && <span className="error">{errors.apellidos.message}</span>}
+        </div>
+
+        <button type="submit">Enviar</button>
+      </form>
+
+      {submitResult && <p className="success">{submitResult}</p>}
 
       <style jsx>{`
-        main {
-          padding: 5rem 0;
-          flex: 1;
+        .container {
+          max-width: 500px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        form {
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
         }
-        footer {
+        div {
+          margin-bottom: 15px;
+        }
+        label {
+          display: block;
+          margin-bottom: 5px;
+        }
+        input {
           width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+          padding: 8px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
         }
-        footer img {
-          margin-left: 0.5rem;
+        button {
+          padding: 10px;
+          background-color: #0070f3;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
         }
-        footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          text-decoration: none;
-          color: inherit;
+        .error {
+          color: red;
+          font-size: 0.8em;
         }
-        code {
-          background: #fafafa;
-          border-radius: 5px;
-          padding: 0.75rem;
-          font-size: 1.1rem;
-          font-family:
-            Menlo,
-            Monaco,
-            Lucida Console,
-            Liberation Mono,
-            DejaVu Sans Mono,
-            Bitstream Vera Sans Mono,
-            Courier New,
-            monospace;
-        }
-      `}</style>
-
-      <style jsx global>{`
-        html,
-        body {
-          padding: 0;
-          margin: 0;
-          font-family:
-            -apple-system,
-            BlinkMacSystemFont,
-            Segoe UI,
-            Roboto,
-            Oxygen,
-            Ubuntu,
-            Cantarell,
-            Fira Sans,
-            Droid Sans,
-            Helvetica Neue,
-            sans-serif;
-        }
-        * {
-          box-sizing: border-box;
+        .success {
+          color: green;
+          font-weight: bold;
         }
       `}</style>
     </div>
